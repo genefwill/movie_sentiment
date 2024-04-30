@@ -4,6 +4,8 @@ import os
 import random
 import spacy
 import re
+from sklearn.preprocessing import LabelEncoder
+from sklearn.feature_extraction.text import TfidfVectorizer
 
 
 # Load English language model from spaCy
@@ -32,5 +34,13 @@ for index, row in cleaned_data.iterrows():
         y.append(gen)
         nsw_tokens = [token.lemma_ for token in tokens if not token.text in stopwords]
         docs.append(" ".join(nsw_tokens))
+
+# Convert labels into numerical values
+label_encoder = LabelEncoder()
+y_encoded = label_encoder.fit_transform(y)
+
+# Convert text data into TF-IDF vectors with feature selection
+tfidf = TfidfVectorizer(max_features=10000, stop_words='english')
+X = tfidf.fit_transform(docs)
 
 
