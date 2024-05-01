@@ -7,7 +7,7 @@ import re
 from sklearn.preprocessing import LabelEncoder
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.feature_selection import SelectKBest, chi2
-
+from sklearn.model_selection import train_test_split
 
 # Load English language model from spaCy
 nlp = spacy.load('en_core_web_lg')
@@ -47,4 +47,7 @@ X = tfidf.fit_transform(docs)
 # Perform feature selection using chi-squared test
 selector = SelectKBest(chi2, k=min(2000, X.shape[1]))  # Select top 2000 features
 X_selected = selector.fit_transform(X, y_encoded)
+
+# Split the dataset into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(X_selected, y_encoded, test_size=0.5, random_state=0)
 
