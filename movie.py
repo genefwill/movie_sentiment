@@ -42,13 +42,6 @@ for index, row in cleaned_data.iterrows():
 label_encoder = LabelEncoder()
 y_encoded = label_encoder.fit_transform(y)
 
-# Loading the TF-IDF vectorizer and feature selector pickles
-with open('tfidf+vectorizer.pkl', 'rb') as f:
-    tfidf = pickle.load(f)
-
-with open ('feature_selector.pkl', 'rb') as f:
-    selector = pickle.load(f)
-
 # Convert text data into TF-IDF vectors with feature selection
 tfidf = TfidfVectorizer(max_features=10000, stop_words='english')
 X = tfidf.fit_transform(docs)
@@ -56,10 +49,6 @@ X = tfidf.fit_transform(docs)
 # Perform feature selection using chi-squared test
 selector = SelectKBest(chi2, k=min(2000, X.shape[1]))  # Select top 2000 features
 X_selected = selector.fit_transform(X, y_encoded)
-
-# pickle for trained model
-with open('trained_model.pkl', 'rb') as f:
-    mnb = pickle.load(f)
 
 # Split the dataset into training and testing sets
 X_train, X_test, y_train, y_test = train_test_split(X_selected, y_encoded, test_size=0.5, random_state=0)
@@ -70,6 +59,16 @@ mnb = MultinomialNB()
 # Train the classifier and predict labels for testing set
 mnb.fit(X_train, y_train)
 y_pred = mnb.predict(X_test)
+
+# Loading the TF-IDF vectorizer and feature selector pickles
+with open('tfidf_vectorizer.pkl', 'wb') as f:
+    pickle.dump(tfidf, f)
+
+with open ('feature_selector.pkl', 'wb') as f:
+    pickle.dump(selector, f)
+
+with open('trained_model.pkl', 'wb') as f:
+    pickle.dump(mnb, f)
 
 # Calculate the accuracy
 accuracy = (y_pred == y_test).mean()
