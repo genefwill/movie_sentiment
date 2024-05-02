@@ -29,8 +29,10 @@ y = []
 # remove stop words and html tags
 for index, row in cleaned_data.iterrows():
     review = row["review"]
+    review = re.sub(r'<br>', '', review)
+    review = re.sub(r'</br', '', review)
     review = re.sub(r'[^a-zA-Z ]', '', review)
-    tokens = nlp(review)
+    tokens = nlp(review) 
     sentiment = row["sentiment"]
     gen = row["sentiment"]
     if (110 < len(tokens) <= 500):
