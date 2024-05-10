@@ -24,7 +24,7 @@ with open('feature_selector.pkl', 'rb') as f:
 # Function to preprocess the input review
 def preprocess_review(review):
     # remove any non words from text
-    review = re.sub(r'[^a-zA-Z ]', '')
+    review = re.sub(r'[^a-zA-Z ]', '', review)
     #tokenize the review with spacy model
     tokens = nlp(review)
     # lemmatize the tokens

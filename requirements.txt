@@ -1,5 +1,4 @@
-scikit-learn~=0.24.2
-spacy~=3.0.6
-pandas~=1.2.4
-numpy~=1.20.3
-tk~=0.1.0
+scikit-learn
+spacy
+pandas
+numpy

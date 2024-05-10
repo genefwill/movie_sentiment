@@ -14,6 +14,13 @@ This is a simple GUI application for analyzing the sentiment of movie reviews us
     pip install -r requirements.txt
     ```
 
+4. Download the spacy model using:
+
+    ```
+    python -m spacy download en_core_web_lg
+    ```
+        
+
 4. Run the application:
 
     ```
