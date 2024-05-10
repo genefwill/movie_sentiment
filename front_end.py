@@ -2,7 +2,7 @@ import tkinter as tk
 from tkinter import scrolledtext, messagebox
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.feature_selection import SelectKBest, chi2
-from sklearn.naive_bayes import MultinomialNB
+from sklearn.svm import SVC
 import spacy
 import re
 import pickle
@@ -14,11 +14,8 @@ nlp = spacy.load('en_core_web_lg')
 stopwords = nlp.Defaults.stop_words
 
 # Load the trained model and TF-IDF vectorizer
-mnb = MultinomialNB()
-tfidf = TfidfVectorizer(max_features=10000, stop_words='english')
-selector = SelectKBest(chi2, k=2000)
-with open('trained_model.pkl', 'rb') as f:
-    mnb = pickle.load(f)
+with open('svm_model.pkl', 'rb') as f:
+    svm = pickle.load(f)
 with open('tfidf_vectorizer.pkl', 'rb') as f:
     tfidf = pickle.load(f)
 with open('feature_selector.pkl', 'rb') as f:
@@ -35,12 +32,12 @@ def preprocess_review(review):
 def categorize_review():
     review = review_entry.get("1.0",'end-1c')
     if not review:
-        messagebox.showwarning("Warning", "Please enter a review.")
+        messagebox.showinfo("Error", "Please enter a review.")
         return
     processed_review = preprocess_review(review)
     X = tfidf.transform([processed_review])
     X_selected = selector.transform(X)
-    category = mnb.predict(X_selected)[0]
+    category = svm.predict(X_selected)[0]
     if category == 1:
         category_label.config(text="Positive")
     else:
@@ -48,20 +45,22 @@ def categorize_review():
 
 # Create the main window
 window = tk.Tk()
+window.geometry("500x350")
 window.title("Movie Review Sentiment Analyzer")
+window.configure(bg='#093f4d')
 
 # Create the review input field
-review_label = tk.Label(window, text="Enter your movie review:")
-review_label.pack()
-review_entry = scrolledtext.ScrolledText(window, wrap=tk.WORD, width=50, height=10)
-review_entry.pack()
+review_label = tk.Label(window, text="Enter your movie review:", bg='#093f4d', fg='white', font=("Arial", 14)) 
+review_label.pack(pady=10)
+review_entry = scrolledtext.ScrolledText(window, wrap=tk.WORD, width=50, height=10, font=("Arial", 10))
+review_entry.pack(pady=10, padx=20)
 
 # Create the button to analyze the review
-analyze_button = tk.Button(window, text="Analyze", command=categorize_review)
-analyze_button.pack()
+analyze_button = tk.Button(window, text="Analyze", command=categorize_review, bg='#8ff7ef', fg='black', font=("Arial", 12)) 
+analyze_button.pack(pady=10)
 
 # Create the label to display the category
-category_label = tk.Label(window, text="")
-category_label.pack()
+category_label = tk.Label(window, text="", bg='#093f4d', fg='white', font=("Arial", 14)) 
+category_label.pack(pady=10)
 
 window.mainloop()

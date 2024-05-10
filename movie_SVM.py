@@ -29,6 +29,7 @@ y = []
 # remove stop words and html tags
 for index, row in cleaned_data.iterrows():
     review = row["review"]
+    # Get rid of html breaks and anything that is not words
     review = re.sub(r'<br>', '', review)
     review = re.sub(r'</br>', '', review)
     review = re.sub(r'[^a-zA-Z ]', '', review)
@@ -51,20 +52,20 @@ selector = SelectKBest(chi2, k=min(3000, X.shape[1]))  # Select top 2000 feature
 X_selected = selector.fit_transform(X, y_encoded)
 
 # Split the dataset into training and testing sets
-#X_train, X_test, y_train, y_test = train_test_split(X_selected, y_encoded, test_size=0.25, random_state=0)
+X_train, X_test, y_train, y_test = train_test_split(X_selected, y_encoded, test_size=0.25, random_state=0)
 
 # Initialize Support Vector Machine classifier
 svm = SVC(kernel='linear')
 
 # Train the classifier and predict labels for testing set
-#mnb.fit(X_train, y_train)
-#y_pred = mnb.predict(X_test)
+svm.fit(X_train, y_train)
+y_pred = svm.predict(X_test)
 
 # Perform cross-validation
-cv_scores = cross_val_score(svm, X_selected, y_encoded, cv=5)
+#cv_scores = cross_val_score(svm, X_selected, y_encoded, cv=5)
 
-print("Cross validation scores: ", cv_scores)
-print("Mean accuracy", np.mean(cv_scores))
+#print("Cross validation scores: ", cv_scores)
+#print("Mean accuracy", np.mean(cv_scores))
 # Loading the TF-IDF vectorizer and feature selector pickles
 with open('tfidf_vectorizer.pkl', 'wb') as f:
     pickle.dump(tfidf, f)
@@ -76,5 +77,5 @@ with open('svm_model.pkl', 'wb') as f:
     pickle.dump(svm, f)
 
 # Calculate the accuracy
-#accuracy = (y_pred == y_test).mean()
-#print("Accuracy:", accuracy)
+accuracy = (y_pred == y_test).mean()
+print("Accuracy:", accuracy)
