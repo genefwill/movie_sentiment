@@ -1,3 +1,11 @@
+"""
+COMP 542 Machine Learning Project
+By: Genevieve Will and Venna Rajesh
+Program predcits sentiments of movie and television reviews 
+as negative or positive. Feature Selection methods TF-IDF and 
+chi-square selector were used. Support Vector Machine model gave
+the best accuracy.
+"""
 import numpy as np
 import pandas as pd
 import os
