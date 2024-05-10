@@ -33,9 +33,11 @@ for index, row in cleaned_data.iterrows():
     review = re.sub(r'<br>', '', review)
     review = re.sub(r'</br>', '', review)
     review = re.sub(r'[^a-zA-Z ]', '', review)
+    # Tokenize the review with spacy model
     tokens = nlp(review) 
     sentiment = row["sentiment"]
     y.append(sentiment)
+    # Lemmatize and remove stop words
     nsw_tokens = [token.lemma_ for token in tokens if not token.text in stopwords]
     docs.append(" ".join(nsw_tokens))
     
@@ -48,7 +50,7 @@ tfidf = TfidfVectorizer(max_features=10000, stop_words='english')
 X = tfidf.fit_transform(docs)
 
 # Perform feature selection using chi-squared test
-selector = SelectKBest(chi2, k=min(3000, X.shape[1]))  # Select top 2000 features
+selector = SelectKBest(chi2, k=min(3000, X.shape[1]))
 X_selected = selector.fit_transform(X, y_encoded)
 
 # Split the dataset into training and testing sets
